@@ -59,4 +59,5 @@ async def run():
     client.disconnect()
 
 if __name__ == '__main__':
-    run()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())
