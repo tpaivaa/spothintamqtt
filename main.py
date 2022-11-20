@@ -42,7 +42,7 @@ def publish(client, message):
     msg_count += 1
 
 def getspotdata(service):
-  URL = f"https://api.spot-hinta.fi/`{service}`"
+  URL = f"https://api.spot-hinta.fi/{service}"
   l.syslog(f"Querying API `{URL}`")
   r = requests.get(URL)
   l.syslog(f"`{r}`")
