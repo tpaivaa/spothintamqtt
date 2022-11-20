@@ -1,27 +1,29 @@
 import random
 import time
 import os
+import syslog as l
+import requests
 from paho.mqtt import client as mqtt_client
 from dotenv import load_dotenv
 load_dotenv()
-
-
-
 
 broker = os.getenv("MQTT")
 port = os.getenv("MQTT_PORT")
 topic = os.getenv("MQTT_TOPIC_NOW")
 # generate client ID with pub prefix randomly
-client_id = f'python-mqtt-{random.randint(0, 1000)}'
+client_id = f'python-mqtt-{random.randint(0, 99999)}'
 mqtt_username = os.getenv("MQTT_USER")
 mqtt_password = os.getenv("MQTT_PASSWORD")
+
+def on_disconnect(client, userdata, rc):
+   l.syslog(f"MQTT client disconnected ok, rc: `{rc}`")
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            print("Connected to MQTT Broker!")
+            l.syslog("Connected to MQTT Broker!")
         else:
-            print("Failed to connect, return code %d\n", rc)
+            l.syslog("Failed to connect, return code %d\n", rc)
 
     client = mqtt_client.Client(client_id)
     client.username_pw_set(mqtt_username, mqtt_password)
@@ -30,26 +32,29 @@ def connect_mqtt():
     return client
 
 
-def publish(client):
-    msg_count = 0
-    while True:
-        time.sleep(1)
-        msg = f"messages: {msg_count}"
-        result = client.publish(topic, msg)
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
-        msg_count += 1
+def publish(client, message):
+    result = client.publish(topic, message)
+    status = result[0]
+    if status == 0:
+        l.syslog(f"Send `{message}` to topic `{topic}`")
+    else:
+        l.syslog(f"Failed to send `{message}` to topic `{topic}`")
+    msg_count += 1
 
+def getspotdata(service):
+  r = requests.get(f'https://api.spot-hinta.fi/`{service}`')
+  l.syslog(r.json())
+  PriceWithTax = r.json().PriceWithTax
+  return r.json(), PriceWithTax
 
 def run():
+    l.syslog('Started')
     client = connect_mqtt()
-    client.loop_start()
-    publish(client)
-
+    client.on_disconnect = on_disconnect
+    spothintaJustNow = getspotdata('JustNow')
+    publish(client, spothintaJustNow)
+    l.syslog('Stopping')
+    client.disconnect()
 
 if __name__ == '__main__':
     run()
