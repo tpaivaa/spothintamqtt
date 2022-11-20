@@ -1,0 +1,13 @@
+[Unit]
+Description=Get spot-hinta and publish mqtt
+After=network.target
+Wants=spothintamqtt.timer
+
+[Service]
+Type=simple
+User=tpaivaa
+WorkingDirectory=/opt/spothintamqtt
+ExecStart=/opt/lampo_python3.10.4/bin/python3.10 /opt/spothintamqtt/main.py
+
+[Install]
+WantedBy=spothintamqtt.target
