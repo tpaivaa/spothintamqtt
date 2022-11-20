@@ -5,7 +5,7 @@ Wants=spothintamqtt.timer
 
 [Service]
 Type=simple
-User=runnner
+User=runner
 WorkingDirectory=/home/runner/spothintamqtt
 ExecStart=/home/runner/spothintamqtt/venv/bin/python3 /home/runner/spothintamqtt/main.py
 
