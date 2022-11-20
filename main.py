@@ -1,6 +1,7 @@
 import random
 import time
 import os
+import asyncio
 import syslog as l
 import requests
 from paho.mqtt import client as mqtt_client
@@ -41,18 +42,18 @@ def publish(client, message):
         l.syslog(f"Failed to send `{message}` to topic `{topic}`")
     msg_count += 1
 
-def getspotdata(service):
+async def getspotdata(service):
   URL = f"https://api.spot-hinta.fi/{service}"
   l.syslog(f"Querying API `{URL}`")
   r = requests.get(URL)
   l.syslog(f"`{r.json()}`")
   return r.json()
 
-def run():
+async def run():
     l.syslog('Started')
     client = connect_mqtt()
     client.on_disconnect = on_disconnect
-    spothintaJustNow = getspotdata('JustNow')
+    spothintaJustNow = await getspotdata('JustNow')
     publish(client, spothintaJustNow)
     l.syslog('Stopping')
     client.disconnect()
