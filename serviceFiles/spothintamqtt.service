@@ -7,7 +7,7 @@ Wants=spothintamqtt.timer
 Type=simple
 User=runnner
 WorkingDirectory=/home/runner/spothintamqtt
-ExecStart=venv/bin/python3 main.py
+ExecStart=/home/runner/spothintamqtt/venv/bin/python3 /home/runner/spothintamqtt/main.py
 
 [Install]
 WantedBy=spothintamqtt.target
