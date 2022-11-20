@@ -45,7 +45,7 @@ def getspotdata(service):
   URL = f"https://api.spot-hinta.fi/`{service}`"
   l.syslog(f"Querying API `{URL}`")
   r = requests.get(URL)
-  l.syslog(r)
+  l.syslog(f"`{r}`")
   PriceWithTax = r.json().PriceWithTax
   return r.json(), PriceWithTax
 
