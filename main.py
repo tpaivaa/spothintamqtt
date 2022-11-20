@@ -4,6 +4,7 @@ import os
 import asyncio
 import syslog as l
 import requests
+import json
 from paho.mqtt import client as mqtt_client
 from dotenv import load_dotenv
 load_dotenv()
@@ -46,9 +47,9 @@ async def getspotdata(service):
   URL = f"https://api.spot-hinta.fi/{service}"
   l.syslog(f"Querying API `{URL}`")
   r = requests.get(URL)
-  l.syslog(f"Response is Typeof: `{type(r.json())}`")
+  l.syslog(f"Response is Typeof: `{type(json.dumps(r.json()))}`")
   l.syslog(f"`{r.json()}`")
-  return r.json()
+  return json.dumps(r.json())
 
 async def run():
     l.syslog('Started')
