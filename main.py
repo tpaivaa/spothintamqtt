@@ -41,7 +41,6 @@ def publish(client, message):
         l.syslog(f"Send `{message}` to topic `{topic}`")
     else:
         l.syslog(f"Failed to send `{message}` to topic `{topic}`")
-    msg_count += 1
 
 async def getspotdata(service):
   URL = f"https://api.spot-hinta.fi/{service}"
