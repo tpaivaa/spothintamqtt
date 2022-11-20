@@ -46,6 +46,7 @@ async def getspotdata(service):
   URL = f"https://api.spot-hinta.fi/{service}"
   l.syslog(f"Querying API `{URL}`")
   r = requests.get(URL)
+  l.syslog(f"Response is Typeof: `{type(r.json())}`")
   l.syslog(f"`{r.json()}`")
   return r.json()
 
