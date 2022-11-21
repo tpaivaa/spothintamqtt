@@ -35,7 +35,7 @@ def connect_mqtt():
 
 
 def publish(client, message):
-    result = client.publish(topic, message)
+    result = client.publish(topic, message, qos=1, retain=True)
     status = result[0]
     if status == 0:
         l.syslog(f"Send `{message}` to topic `{topic}`")
